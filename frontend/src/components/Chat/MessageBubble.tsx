@@ -11,7 +11,7 @@ export const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) =
   const [copied, setCopied] = useState(false);
 
   const renderedHtml = useMemo(() => {
-    if (isUser) return null;
+    if (isUser || !message.content) return null;
     const rawHtml = marked.parse(message.content) as string;
     return DOMPurify.sanitize(rawHtml);
   }, [message.content, isUser]);
@@ -35,19 +35,30 @@ export const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) =
 
   return (
     <div className={`message-row ${isUser ? 'user' : 'assistant'}`}>
-      <div className="message-bubble">
-        <div className="message-header">
-          <span>{isUser ? 'You' : 'Lenny Assistant'}</span>
-          {message.model_used && <span className="model-badge">{message.model_used}</span>}
+      <div className="message-bubble-premium">
+        <div className="message-header-premium">
+          <div className="avatar-title">
+            <span className="role-avatar">{isUser ? '👤' : '🚀'}</span>
+            <span className="role-name">{isUser ? 'You' : 'Lenny Assistant'}</span>
+          </div>
+          {message.model_used && (
+            <span className="model-badge-premium">{message.model_used}</span>
+          )}
         </div>
 
         {isUser ? (
-          <div className="message-content">{message.content}</div>
-        ) : (
+          <div className="message-content-user">{message.content}</div>
+        ) : message.content ? (
           <div
-            className="message-content markdown-rendered"
+            className="message-content-assistant markdown-rendered"
             dangerouslySetInnerHTML={{ __html: renderedHtml || '' }}
           />
+        ) : (
+          <div className="typing-indicator">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </div>
         )}
 
         {message.source_citations && message.source_citations.length > 0 && (
@@ -55,11 +66,11 @@ export const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) =
         )}
 
         {!isUser && message.content && (
-          <div className="message-actions">
-            <button className="action-btn" onClick={handleCopy}>
+          <div className="message-actions-bar">
+            <button className="action-pill" onClick={handleCopy}>
               {copied ? '✓ Copied' : '📋 Copy'}
             </button>
-            <button className="action-btn" onClick={handleCreateArtifact}>
+            <button className="action-pill" onClick={handleCreateArtifact}>
               📄 View Artifact
             </button>
           </div>
