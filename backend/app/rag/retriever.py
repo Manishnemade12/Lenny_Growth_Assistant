@@ -49,7 +49,8 @@ class Retriever:
                 )
                 rows = result.fetchall()
             except Exception as e:
-                logger.warning(f"Vector search falling back to text search: {e}")
+                logger.warning(f"Vector search failed, rolling back transaction for fallback: {e}")
+                await db.rollback()
                 # Text similarity fallback using ILIKE keywords
                 keywords = [w for w in query.split() if len(w) > 3][:3]
                 if keywords:
