@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class Retriever:
-    """Vector similarity retriever using cosine distance on pgvector."""
+    """Vector similarity retriever using cosine distance on pgvector with text fallback."""
 
     def __init__(self):
         self.embedding_service = EmbeddingService()
@@ -28,24 +28,47 @@ class Retriever:
         query_embedding = await self.embedding_service.embed(query)
 
         async with async_session_factory() as db:
-            result = await db.execute(
-                text("""
-                    SELECT 
-                        id, source_file, episode_title, speaker, 
-                        chunk_index, content, metadata,
-                        1 - (embedding <=> :query_vec::vector) as score
-                    FROM transcript_chunks
-                    WHERE 1 - (embedding <=> :query_vec::vector) > :threshold
-                    ORDER BY embedding <=> :query_vec::vector
-                    LIMIT :limit
-                """),
-                {
-                    "query_vec": str(query_embedding),
-                    "threshold": threshold,
-                    "limit": limit,
-                },
-            )
-            rows = result.fetchall()
+            # Try vector cosine similarity using CAST(:query_vec AS vector)
+            try:
+                result = await db.execute(
+                    text("""
+                        SELECT 
+                            id, source_file, episode_title, speaker, 
+                            chunk_index, content, metadata,
+                            1 - (embedding <=> CAST(:query_vec AS vector)) as score
+                        FROM transcript_chunks
+                        WHERE 1 - (embedding <=> CAST(:query_vec AS vector)) > :threshold
+                        ORDER BY embedding <=> CAST(:query_vec AS vector)
+                        LIMIT :limit
+                    """),
+                    {
+                        "query_vec": str(query_embedding),
+                        "threshold": threshold,
+                        "limit": limit,
+                    },
+                )
+                rows = result.fetchall()
+            except Exception as e:
+                logger.warning(f"Vector search falling back to text search: {e}")
+                # Text similarity fallback using ILIKE keywords
+                keywords = [w for w in query.split() if len(w) > 3][:3]
+                if keywords:
+                    pattern = f"%{keywords[0]}%"
+                    result = await db.execute(
+                        text("""
+                            SELECT 
+                                id, source_file, episode_title, speaker, 
+                                chunk_index, content, metadata,
+                                0.8 as score
+                            FROM transcript_chunks
+                            WHERE content ILIKE :pattern
+                            LIMIT :limit
+                        """),
+                        {"pattern": pattern, "limit": limit},
+                    )
+                    rows = result.fetchall()
+                else:
+                    rows = []
 
         chunks = [
             {
@@ -62,7 +85,7 @@ class Retriever:
         ]
 
         logger.info(
-            "Vector search completed",
+            "Retriever search completed",
             extra={"query": query[:50], "results_count": len(chunks)},
         )
         return chunks
