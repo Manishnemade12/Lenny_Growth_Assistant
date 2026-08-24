@@ -1,0 +1,41 @@
+.artifact-viewer {
+  width: 420px;
+  background-color: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.artifact-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.artifact-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+}
+
+.artifact-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+.markdown-content {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
