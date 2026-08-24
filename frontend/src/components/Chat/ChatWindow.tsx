@@ -5,6 +5,13 @@ import { InputBar } from './InputBar';
 import { MessageBubble } from './MessageBubble';
 import './chat.css';
 
+const SUGGESTED_PROMPTS = [
+  'What does Lenny say about Product-Market Fit?',
+  'Write a Ship 30 for 30 essay on growth loops',
+  'Create an HTML artifact summarizing PMF metrics',
+  'What are the key hiring traits for early PMs?',
+];
+
 export const ChatWindow: React.FC = () => {
   const {
     activeSessionId,
@@ -63,7 +70,20 @@ export const ChatWindow: React.FC = () => {
         {messages.length === 0 ? (
           <div className="welcome-screen">
             <h2>Welcome to Lenny Growth Assistant</h2>
-            <p>Ask product management questions or request a Ship 30 for 30 essay grounded in Lenny's transcripts.</p>
+            <p>
+              Ask grounded product management & growth questions, generate Ship 30 for 30 essays, or create sandboxed artifacts from 50+ Lenny Podcast transcripts.
+            </p>
+            <div className="prompt-suggestions">
+              {SUGGESTED_PROMPTS.map((prompt, i) => (
+                <button
+                  key={i}
+                  className="prompt-badge"
+                  onClick={() => handleSend(prompt)}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           messages.map((m, idx) => <MessageBubble key={m.id || idx} message={m} />)
