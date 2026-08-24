@@ -199,22 +199,13 @@ OLLAMA_EMBED_MODEL=nomic-embed-text
 
 | # | Deliverable | Location in Repo | Status |
 | --- | --- | --- | --- |
-| **1** | **Public GitHub Repository** | `https://github.com/Manishnemade12/Lenny_Growth_Assistant.git` | ✅ Live |
-| **2** | **README.md** | [README.md](./README.md) | ✅ Verified |
-| **3** | **PRD.md** | [PRD.md](./PRD.md) | ✅ Verified |
-| **4** | **design.md** | [design.md](./design.md) | ✅ Verified |
-| **5** | **architecture.md** | [architecture.md](./architecture.md) | ✅ Verified |
-| **6** | **Agent Transcripts** | [agent-transcripts/execution_log.md](./agent-transcripts/execution_log.md) | ✅ Verified |
-| **7** | **Tests & Test Plan** | [backend/tests/](./backend/tests/) & [docs/manual-test-plan.md](./docs/manual-test-plan.md) | ✅ Verified |
-| **8** | **Demo Video Instructions** | [See instructions below](#demo-video-instructions) | ✅ Ready |
-
-### Demo Video Instructions
-Record a 2–3 minute video explaining:
-1. The business problem and discovery brief framing
-2. End-to-end product demo showing Grounded Q&A, Ship 30 essay, and Artifact Viewer
-3. Local Ollama demonstration
-4. Explanation of key technical trade-offs (vector search latency vs cloud LLM costs)
-5. Upload to YouTube and submit link via submission form.
+| **1** | **Public GitHub Repository** | `https://github.com/Manishnemade12/Lenny_Growth_Assistant.git` | 
+| **2** | **README.md** | [README.md](./README.md) |
+| **3** | **PRD.md** | [PRD.md](./PRD.md) ||
+| **4** | **design.md** | [design.md](./design.md) | 
+| **5** | **architecture.md** | [architecture.md](./architecture.md) | 
+| **6** | **Agent Transcripts** | [agent-transcripts/execution_log.md](./agent-transcripts/execution_log.md) | 
+| **7** | **Tests & Test Plan** | [backend/tests/](./backend/tests/) & [docs/manual-test-plan.md](./docs/manual-test-plan.md) | 
 
 ---
 
@@ -224,6 +215,3 @@ See [docs/troubleshooting.md](./docs/troubleshooting.md) for detailed operationa
 
 ---
 
-## License
-
-This project is created as part of the Forward Deployed Engineer Take-Home Assessment.
