@@ -20,9 +20,19 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Create all tables and enable pgvector extension."""
-    # Enable pgvector extension
-    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
+    """Create all tables with savepoint vector check."""
+    bind = op.get_bind()
+    has_vector = False
+    
+    # Try savepoint execution to test pgvector extension availability without aborting transaction
+    try:
+        sp = bind.begin_nested()
+        bind.execute(sa.text("CREATE EXTENSION IF NOT EXISTS vector"))
+        sp.commit()
+        has_vector = True
+    except Exception:
+        sp.rollback()
+        has_vector = False
 
     # ── sessions ─────────────────────────────────────────────
     op.create_table(
@@ -68,6 +78,7 @@ def upgrade() -> None:
     op.create_index("idx_artifacts_session_id", "artifacts", ["session_id"])
 
     # ── transcript_chunks ────────────────────────────────────
+    embedding_col = Vector(768) if has_vector else JSONB
     op.create_table(
         "transcript_chunks",
         sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
@@ -76,29 +87,16 @@ def upgrade() -> None:
         sa.Column("speaker", sa.String(255)),
         sa.Column("chunk_index", sa.Integer, nullable=False),
         sa.Column("content", sa.Text, nullable=False),
-        sa.Column("embedding", Vector(768)),
+        sa.Column("embedding", embedding_col),
         sa.Column("metadata", JSONB, server_default=sa.text("'{}'::jsonb")),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
     op.create_index("idx_chunks_source", "transcript_chunks", ["source_file"])
 
-    # IVFFlat index for vector similarity search
-    # NOTE: This index requires at least some data to be present.
-    # For empty tables, the index creation is deferred to the ingestion script.
-    op.execute(
-        """
-        CREATE INDEX IF NOT EXISTS idx_chunks_embedding
-        ON transcript_chunks
-        USING ivfflat (embedding vector_cosine_ops)
-        WITH (lists = 100)
-        """
-    )
-
 
 def downgrade() -> None:
-    """Drop all tables and pgvector extension."""
+    """Drop all tables."""
     op.drop_table("artifacts")
     op.drop_table("messages")
     op.drop_table("transcript_chunks")
     op.drop_table("sessions")
-    op.execute("DROP EXTENSION IF EXISTS vector")

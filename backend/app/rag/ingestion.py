@@ -3,10 +3,10 @@
 import logging
 from pathlib import Path
 
+from app.config import settings
+from app.db.repositories.transcript_repo import TranscriptRepository
 from app.rag.chunker import RecursiveCharacterChunker
 from app.rag.embeddings import EmbeddingService
-from app.db.repositories.transcript_repo import TranscriptRepository
-from app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -23,18 +23,30 @@ class TranscriptIngester:
         )
         self.repo = TranscriptRepository(db)
 
-    async def ingest_directory(self, transcript_dir: str):
-        """Process all markdown/text transcript files in a target directory."""
-        path = Path(transcript_dir)
-        if not path.exists():
-            logger.warning(f"Directory {transcript_dir} does not exist")
+    async def ingest_directory(self, transcript_dir: str = "data/transcripts"):
+        """Process all markdown/text transcript files in target directory with incremental commits."""
+        candidates = [
+            Path(transcript_dir),
+            Path("..") / transcript_dir,
+            Path(__file__).parent.parent.parent.parent / transcript_dir,
+        ]
+
+        target_path = None
+        for cand in candidates:
+            if cand.exists() and cand.is_dir():
+                target_path = cand
+                break
+
+        if not target_path:
+            logger.warning(f"Directory {transcript_dir} does not exist in candidate paths")
             return
 
-        files = list(path.glob("*.md")) + list(path.glob("*.txt"))
-        logger.info(f"Found {len(files)} transcript files to ingest")
+        files = list(target_path.glob("*.md")) + list(target_path.glob("*.txt"))
+        logger.info(f"Found {len(files)} transcript files in {target_path} to ingest")
 
         for f in files:
             await self.ingest_file(f)
+            await self.db.commit()
 
     async def ingest_file(self, file_path: Path):
         """Parse and ingest a single transcript file if not already present."""
