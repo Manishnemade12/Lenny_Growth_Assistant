@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     # ─── Database ──────────────────────────────────────────────
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/lenny_assistant"
 
+    # ─── Supabase Configuration ───────────────────────────────
+    PUBLIC_SUPABASE_URL: str | None = None
+    PUBLIC_SUPABASE_PUBLISHABLE_KEY: str | None = None
+    SUPABASE_SECRET_KEY: str | None = None
+
     # ─── Security ──────────────────────────────────────────────
     SECRET_KEY: str = "change-me-in-production"
 
@@ -51,6 +56,7 @@ class Settings(BaseSettings):
     model_config = {
         "env_file": ".env",
         "case_sensitive": True,
+        "extra": "ignore",
     }
 
 
