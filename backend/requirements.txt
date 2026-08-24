@@ -1,0 +1,30 @@
+# ─── FastAPI & Server ───────────────────────────────
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+python-multipart==0.0.20
+httpx==0.28.1
+
+# ─── Database ──────────────────────────────────────
+sqlalchemy[asyncio]==2.0.41
+asyncpg==0.31.0
+alembic==1.15.2
+pgvector==0.3.6
+
+# ─── Configuration & Validation ────────────────────
+pydantic==2.11.4
+pydantic-settings==2.9.1
+python-dotenv==1.1.0
+
+# ─── LLM Providers ────────────────────────────────
+anthropic==0.52.0
+
+# ─── Logging ───────────────────────────────────────
+python-json-logger==3.3.0
+
+# ─── Testing ───────────────────────────────────────
+pytest==8.3.5
+pytest-asyncio==0.26.0
+pytest-cov==6.1.1
+
+# ─── Utilities ─────────────────────────────────────
+uuid7==0.1.0
