@@ -25,12 +25,28 @@ export const ChatWindow: React.FC = () => {
   } = useAppStore();
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isUserScrolledUp = useRef<boolean>(false);
+
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    // If distance from bottom is greater than 100px, user has manually scrolled up
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    isUserScrolledUp.current = distanceFromBottom > 100;
+  };
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Only auto-scroll down if user hasn't manually scrolled up
+    if (!isUserScrolledUp.current) {
+      scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
 
   const handleSend = async (text: string) => {
+    // Reset manual scroll flag when user sends a new message
+    isUserScrolledUp.current = false;
+
     let sessionId = activeSessionId;
     if (!sessionId) {
       sessionId = await createNewSession();
@@ -66,7 +82,11 @@ export const ChatWindow: React.FC = () => {
 
   return (
     <div className="chat-window">
-      <div className="chat-messages">
+      <div
+        className="chat-messages"
+        ref={containerRef}
+        onScroll={handleScroll}
+      >
         {messages.length === 0 ? (
           <div className="welcome-screen">
             <h2>Welcome to Lenny Growth Assistant</h2>
