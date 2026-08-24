@@ -314,6 +314,80 @@
   line-height: 1.4;
 }
 
+/* Run Details Collapsible Accordion */
+.run-details-wrapper {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}
+
+.run-details-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-primary);
+  }
+}
+
+.details-icon {
+  font-size: 0.85rem;
+  color: var(--accent-primary);
+}
+
+.details-label {
+  font-weight: 600;
+}
+
+.details-chevron {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.run-details-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  animation: fadeIn 0.15s ease;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-key {
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.detail-val {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
 .message-actions-bar {
   display: flex;
   gap: 8px;

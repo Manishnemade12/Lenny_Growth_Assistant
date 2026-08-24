@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import type { ChatMessage } from '../../types/chat';
 import { SourceCitationCard } from './SourceCitationCard';
+import { RunDetailsCard } from './RunDetailsCard';
 import { useAppStore } from '../../stores/appStore';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -66,14 +67,17 @@ export const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) =
         )}
 
         {!isUser && message.content && (
-          <div className="message-actions-bar">
-            <button className="action-pill" onClick={handleCopy}>
-              {copied ? '✓ Copied' : '📋 Copy'}
-            </button>
-            <button className="action-pill" onClick={handleCreateArtifact}>
-              📄 View Artifact
-            </button>
-          </div>
+          <>
+            <RunDetailsCard message={message} />
+            <div className="message-actions-bar">
+              <button className="action-pill" onClick={handleCopy}>
+                {copied ? '✓ Copied' : '📋 Copy'}
+              </button>
+              <button className="action-pill" onClick={handleCreateArtifact}>
+                📄 View Artifact
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

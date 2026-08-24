@@ -12,6 +12,7 @@ export interface ChatMessage {
   content: string;
   source_citations?: SourceCitation[];
   model_used?: string;
+  metadata?: Record<string, any>;
   created_at: string;
 }
 
