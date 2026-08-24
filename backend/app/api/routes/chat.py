@@ -1,4 +1,4 @@
-"""FastAPI SSE and JSON chat API routes."""
+"""FastAPI chat API route supporting both SSE streaming and standard JSON responses."""
 
 import json
 import logging
@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.orchestrator import AgentOrchestrator
 from app.db.database import get_db
-from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatRequest, ChatResponse
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -19,9 +19,19 @@ async def chat(
     request: ChatRequest,
     db: AsyncSession = Depends(get_db),
 ):
-    """Chat endpoint supporting SSE streaming responses."""
+    """Chat endpoint supporting SSE streaming (stream=true) and JSON response (stream=false)."""
     orchestrator = AgentOrchestrator()
 
+    if not request.stream:
+        # Non-streaming JSON response
+        response_dict = await orchestrator.process_message(
+            session_id=request.session_id,
+            message=request.message,
+            db=db,
+        )
+        return ChatResponse(**response_dict)
+
+    # SSE streaming response
     async def event_stream():
         try:
             yield f"event: message_start\ndata: {json.dumps({'status': 'started'})}\n\n"
