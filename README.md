@@ -280,6 +280,7 @@ OLLAMA_EMBED_MODEL=nomic-embed-text
 
 ## Deliverables & Evaluation Checklist
 
+<<<<<<< HEAD
 | # | Deliverable | Repository Path | Status |
 | :--- | :--- | :--- | :--- |
 | **1** | **Public GitHub Repository** | `https://github.com/Manishnemade12/Lenny_Growth_Assistant.git` | ✅ Live |
@@ -320,9 +321,27 @@ npm run test
 
 ### Manual QA Plan
 Refer to [docs/manual-test-plan.md](./docs/manual-test-plan.md) for step-by-step test execution scenarios covering streaming, citations, artifact security sandboxing, and edge cases.
+=======
+| # | Deliverable | Location in Repo | Status |
+| --- | --- | --- | --- |
+| **1** | **Public GitHub Repository** | `https://github.com/Manishnemade12/Lenny_Growth_Assistant.git` | 
+| **2** | **README.md** | [README.md](./README.md) |
+| **3** | **PRD.md** | [PRD.md](./PRD.md) ||
+| **4** | **design.md** | [design.md](./design.md) | 
+| **5** | **architecture.md** | [architecture.md](./architecture.md) | 
+| **6** | **Agent Transcripts** | [agent-transcripts/execution_log.md](./agent-transcripts/execution_log.md) | 
+| **7** | **Tests & Test Plan** | [backend/tests/](./backend/tests/) & [docs/manual-test-plan.md](./docs/manual-test-plan.md) | 
+>>>>>>> df34b4a8463644608dbc048492dbe0a9f999462a
 
 ---
 
 ## Troubleshooting
 
+<<<<<<< HEAD
 Refer to [docs/troubleshooting.md](./docs/troubleshooting.md) for operational support, Docker startup fixes, PostgreSQL vector issues, and Ollama integration details.
+=======
+See [docs/troubleshooting.md](./docs/troubleshooting.md) for detailed operational troubleshooting covering Docker Compose, Supabase PgBouncer, Ollama local model, and artifact security isolation.
+
+---
+
+>>>>>>> df34b4a8463644608dbc048492dbe0a9f999462a
